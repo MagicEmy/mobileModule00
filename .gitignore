@@ -1,0 +1,60 @@
+# Android Studio / IntelliJ IDEA
+**/.idea/
+**/*.iml
+**/.idea/workspace.xml
+**/.idea/tasks.xml
+**/.idea/gradle.xml
+**/.idea/assetWizardSettings.xml
+**/.idea/dictionaries
+**/.idea/libraries
+**/.idea/caches
+**/.idea/modules.xml
+**/.idea/navEditor.xml
+
+# Gradle
+**/.gradle/
+**/build/
+**/gradle-app.setting
+!**/gradle/wrapper/gradle-wrapper.jar
+
+# Local configuration files
+**/local.properties
+
+# Built application files
+**/*.apk
+**/*.aab
+**/*.ap_
+**/*.dex
+
+# Java/Kotlin compilation
+**/*.class
+
+# Generated files
+**/bin/
+**/gen/
+**/out/
+
+# Android Studio captures folder
+**/captures/
+
+# External native build folder
+**/.externalNativeBuild/
+**/.cxx/
+
+# Keystore files (IMPORTANT: never commit these!)
+**/*.jks
+**/*.keystore
+
+# Google Services (Firebase, etc.)
+**/google-services.json
+
+# OS files
+.DS_Store
+**/.DS_Store
+**/Thumbs.db
+
+# Kotlin
+**/.kotlin/
+
+# Android Profiling
+**/*.hprof
