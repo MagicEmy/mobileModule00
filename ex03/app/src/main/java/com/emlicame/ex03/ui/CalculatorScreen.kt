@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -34,8 +33,22 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.emlicame.ex03.ui.components.CalculatorButton
+import com.emlicame.ex03.utils.toCalculatorString
+import net.objecthunter.exp4j.ExpressionBuilder
 
-
+/*
+ * Checklist:
+ * - [ ] Equals (=) button evaluates expression and handles errors with different messages
+ * - [ ] Equals (=) when expression is 0 shows "Enter an expression"-> better no action?
+ * - [ ] allow 0 /0 to show "Cannot divide by 0"
+ * - [ ] allow 0 + / * -
+ * - [x] Prevents multiple operators in a row
+ * - [x] Prevents multiple decimals in the current number
+ * - [x] UI is responsive and works on tablets
+ * - [x] Uses LazyVerticalGrid with fixed columns for consistent layout
+ * - [x] Well-commented code for clarity
+ * - [x] Preview functions for light/dark mode and tablet layouts
+ */
 private const val TAG = "ex03"
 
 private val calculatorKeys: List<String> = listOf(
@@ -51,8 +64,9 @@ private val calculatorKeys: List<String> = listOf(
 fun CalculatorScreen() {
 
     // STATE
-    var expression by remember { mutableStateOf("0") }
-    var result by remember { mutableStateOf("0") }
+    var expression by remember { mutableStateOf("") }
+    var result by remember { mutableStateOf("") }
+    var justCalculated by remember { mutableStateOf(false) } // To track if last action was calculation
 
     // HELPER: Check if expression ends with operator
     fun endsWithOperator(text: String): Boolean {
@@ -62,35 +76,87 @@ fun CalculatorScreen() {
     }
 
     // HELPER: Check if current number has decimal
+    val operatorRegex = Regex("[+\\-*/]")
     fun currentNumberHasDecimal(): Boolean {
-        val lastNumber = expression.split(Regex("[+\\-*/]")).lastOrNull() ?: ""
-        return lastNumber.contains(".")
+        return expression.split(operatorRegex).lastOrNull()?.contains(".") == true
     }
 
     // BUTTON HANDLER: Main logic for all buttons
     fun onButtonClick(label: String) {
         when (label) {
             "AC" -> {
-                expression = "0"
-                result = "0"
+                expression = ""
+                result = ""
+                justCalculated = false
             }
             "C" -> {
+                justCalculated = false
                 if (expression.length > 1) {
                     expression = expression.dropLast(1)
                 } else {
-                    expression = "0"
+                    expression = ""
                 }
             }
             "=" -> {
-                result = "Coming soon!"
+                when {
+//                    expression == "" -> {
+//                        result = "Enter an expression"
+//                        return
+//                    }
+                    endsWithOperator(expression) -> {
+                        result = "Incomplete"
+                        return
+                    }
+                }
+                try {
+                    // Create an expression from the string and evaluate it
+                    val calculation = ExpressionBuilder(expression)
+                        .build()
+                        .evaluate()
+
+                    result = calculation.toCalculatorString()
+
+                    justCalculated = true
+
+//                    if (result != "Error") {
+//                        justCalculated = true
+//                    }
+                } catch (e: Exception) {
+                    // If anything goes wrong, show "Error"
+                    result = if (e.message?.contains("Division by zero") == true) {
+                        "Cannot divide by 0"
+                    } else {
+                        "Error"
+                    } // also Calculation error: Expression can not be empty
+                    Log.e(TAG, "Calculation error: ${e.message}")
+                }
             }
             in setOf("+", "-", "*", "/") -> {
-                if (expression == "0") {
-                    if (label == "-") {
-                        expression = label
+                when {
+                    // CASE 1: Just calculated - continue from result
+                    justCalculated -> {
+                        if (result != "Error") {
+                            expression = result + label  // Continue: "8" + "+" = "8+"
+                            justCalculated = false       // Clear the flag
+                        }
                     }
-                } else if (!endsWithOperator(expression)) {
-                    expression += label
+
+                    // CASE 2: Starting fresh - only allow minus for negatives
+                    expression == "" -> {
+                        if (label == "-") {
+                            expression = label
+                        }
+                    }
+
+                    // CASE 3: Don't allow consecutive operators
+                    endsWithOperator(expression) -> {
+                        // Do nothing - ignore the new operator
+                    }
+
+                    // CASE 4: Valid addition of operator
+                    else -> {
+                        expression += label
+                    }
                 }
             }
             "." -> {
@@ -101,17 +167,29 @@ fun CalculatorScreen() {
                 }
             }
             else -> {
-                // Numbers
-                if (expression == "0") {
-                    expression = label
-                } else {
-                    expression += label
+                // Numbers (0-9)
+                when {
+                    // CASE 1: Just calculated - start fresh with new number
+                    justCalculated -> {
+                        expression = label
+                        result = ""
+                        justCalculated = false  // Reset the flag
+                    }
+
+                    // CASE 2: Replace initial "0"
+                    expression == "" -> {
+                        expression = label
+                    }
+
+                    // CASE 3: Append number
+                    else -> {
+                        expression += label
+                    }
                 }
             }
         }
         Log.d(TAG, "Expression: $expression, Result: $result")
     }
-
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -198,7 +276,6 @@ private fun PreviewCalculatorScreen() {
         CalculatorScreen()
     }
 }
-
 
 @Preview(showBackground = true, name = "Tablet", widthDp = 800, heightDp = 1280)
 @Composable
