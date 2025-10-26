@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -20,6 +21,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -44,6 +49,70 @@ private val calculatorKeys: List<String> = listOf(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalculatorScreen() {
+
+    // STATE
+    var expression by remember { mutableStateOf("0") }
+    var result by remember { mutableStateOf("0") }
+
+    // HELPER: Check if expression ends with operator
+    fun endsWithOperator(text: String): Boolean {
+        if (text.isEmpty()) return false
+        val lastChar = text.last()
+        return lastChar in setOf('+', '-', '*', '/')
+    }
+
+    // HELPER: Check if current number has decimal
+    fun currentNumberHasDecimal(): Boolean {
+        val lastNumber = expression.split(Regex("[+\\-*/]")).lastOrNull() ?: ""
+        return lastNumber.contains(".")
+    }
+
+    // BUTTON HANDLER: Main logic for all buttons
+    fun onButtonClick(label: String) {
+        when (label) {
+            "AC" -> {
+                expression = "0"
+                result = "0"
+            }
+            "C" -> {
+                if (expression.length > 1) {
+                    expression = expression.dropLast(1)
+                } else {
+                    expression = "0"
+                }
+            }
+            "=" -> {
+                result = "Coming soon!"
+            }
+            in setOf("+", "-", "*", "/") -> {
+                if (expression == "0") {
+                    if (label == "-") {
+                        expression = label
+                    }
+                } else if (!endsWithOperator(expression)) {
+                    expression += label
+                }
+            }
+            "." -> {
+                if (expression == "0") {
+                    expression = "0."
+                } else if (!currentNumberHasDecimal()) {
+                    expression += "."
+                }
+            }
+            else -> {
+                // Numbers
+                if (expression == "0") {
+                    expression = label
+                } else {
+                    expression += label
+                }
+            }
+        }
+        Log.d(TAG, "Expression: $expression, Result: $result")
+    }
+
+
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
@@ -72,7 +141,7 @@ fun CalculatorScreen() {
                     style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold)
                 )
                 TextField(
-                    value = "0",
+                    value = expression,
                     onValueChange = {},
                     readOnly = true,
                     singleLine = true,
@@ -89,7 +158,7 @@ fun CalculatorScreen() {
                     style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold)
                 )
                 TextField(
-                    value = "0",
+                    value = result,
                     onValueChange = {},
                     readOnly = true,
                     singleLine = true,
@@ -112,8 +181,7 @@ fun CalculatorScreen() {
                     items(calculatorKeys) { key ->
                         CalculatorButton(
                             label = key,
-                            onClick = { label ->
-                                Log.d(TAG, "Button pressed: $label")
+                            onClick = { onButtonClick(it)
                             }
                         )
                     }
