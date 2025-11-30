@@ -36,7 +36,7 @@ class CalculatorViewModel : ViewModel() {
     val expression: StateFlow<String> = _expression.asStateFlow()
     val result: StateFlow<String> = _result.asStateFlow()
 
-    val justCalculated: StateFlow<Boolean> = _justCalculated.asStateFlow() // possible future use - exposed for consistency
+//    val justCalculated: StateFlow<Boolean> = _justCalculated.asStateFlow() // possible future use - exposed for consistency
 
 
     private val operatorRegex = Regex("[+\\-*/]")
