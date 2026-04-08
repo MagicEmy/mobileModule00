@@ -26,13 +26,13 @@ fun HomeScreen(
     var showHello by rememberSaveable { mutableStateOf(false) }
 
     Surface(
-        modifier = Modifier.Companion.fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
         Column(
-            modifier = Modifier.Companion.fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.Companion.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             val text = if (showHello) "Hello World!" else initialText
             Text(text = text, style = MaterialTheme.typography.headlineMedium)

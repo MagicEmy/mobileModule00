@@ -36,7 +36,6 @@ private val LightColorScheme = lightColorScheme(
 @Composable
 fun Ex01Theme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {

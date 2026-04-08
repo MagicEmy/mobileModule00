@@ -20,7 +20,9 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+					isMinifyEnabled = true // This enables R8 shrinking and optimization
+           isShrinkResources = true // This removes unused resources
+            signingConfig = signingConfigs.getByName("debug") // Allows you to run it easily on the emulator
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
