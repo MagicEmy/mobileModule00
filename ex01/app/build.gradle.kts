@@ -22,7 +22,7 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
-            signingConfig = signingConfigs.getByName("debug") // Allows you to run it easily on the emulator
+            signingConfig = signingConfigs.getByName("debug") // use the auto-generated debug key
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
