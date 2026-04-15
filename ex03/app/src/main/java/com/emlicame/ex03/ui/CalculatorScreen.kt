@@ -114,7 +114,7 @@ private fun CalculatorContent(
 
         // Button grid takes the remaining space
         LazyVerticalGrid(
-            columns = GridCells.Adaptive(80.dp),
+            columns = GridCells.Fixed(4),
             horizontalArrangement = Arrangement.spacedBy(8.dp), // Added for consistency
             verticalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(vertical = 8.dp),
