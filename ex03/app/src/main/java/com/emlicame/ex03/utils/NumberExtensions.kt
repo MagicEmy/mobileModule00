@@ -42,9 +42,9 @@ fun Double.toCalculatorString(): String {
 
     val standardDecimalString = decimalFormatter.format(this)
 
-    // Condition 2: Check if the standard decimal string is too long.
-    // If it is, switch to scientific notation as a fallback.
-    if (standardDecimalString.length > MAX_RESULT_LENGTH) {
+    // Use scientific notation if the number is outside our logical bounds 
+    // OR if the resulting string is physically too long for the display.
+    if (useScientific || standardDecimalString.length > MAX_RESULT_LENGTH) {
         return scientificFormatter.format(this)
     }
 
@@ -52,4 +52,3 @@ fun Double.toCalculatorString(): String {
     // return the standard formatted string.
     return standardDecimalString
 }
-//val symbols = DecimalFormatSymbols(Locale.US)

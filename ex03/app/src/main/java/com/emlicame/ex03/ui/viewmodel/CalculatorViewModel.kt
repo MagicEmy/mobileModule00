@@ -103,6 +103,9 @@ class CalculatorViewModel : ViewModel() {
         if (_expression.value.length >= MAX_EXPRESSION_LENGTH && !_justCalculated.value) {
             return // Do nothing
         }
+        
+        val currentExpr = _expression.value
+        
         when {
             // Continue from previous result
             _justCalculated.value -> {
@@ -112,16 +115,27 @@ class CalculatorViewModel : ViewModel() {
                 }
             }
 
-            // Allow minus for negative numbers
-            _expression.value.isEmpty() -> {
+            // Allow minus for negative numbers at start
+            currentExpr.isEmpty() -> {
                 if (operator == "-") {
                     _expression.value = operator
                 }
             }
 
-            // Prevent consecutive operators
-            endsWithOperator(_expression.value) -> {
-                _expression.value = _expression.value.dropLast(1) + operator
+            // Handle consecutive operators
+            endsWithOperator(currentExpr) -> {
+                val lastChar = currentExpr.last()
+                
+                if (operator == "-" && (lastChar == '*' || lastChar == '/')) {
+                    _expression.value += operator
+                } 
+                // if 2 operators (e.g. "*-") and user presses a third, replace both
+                else if (currentExpr.length >= 2 && endsWithOperator(currentExpr.dropLast(1))) {
+                    _expression.value = currentExpr.dropLast(2) + operator
+                }
+                else {
+                    _expression.value = currentExpr.dropLast(1) + operator
+                }
             }
 
             else -> {
