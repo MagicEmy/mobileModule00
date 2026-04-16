@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">calculator_app</string>
+    <string name="app_title">Calculator</string>
+    <string name="expression_label">Expression</string>
+    <string name="result_label">Result</string>
+    <string name="button_ac">AC</string>
+    <string name="button_c">C</string>
+
+</resources>
