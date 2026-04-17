@@ -161,38 +161,26 @@ private fun ButtonGrid(
 
 @Composable
 private fun PortraitDisplay(expression: String, result: String) {
-    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
+        horizontalAlignment = Alignment.End,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         Text(
-            text = stringResource(id = R.string.expression_label),
-            style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold)
-        )
-        TextField(
-            value = expression,
-            onValueChange = {},
-            readOnly = true,
-            singleLine = true,
-            textStyle = MaterialTheme.typography.headlineMedium.copy(
-                textAlign = TextAlign.End,
-                fontSize = 24.sp
+            text = expression.ifEmpty { " " },
+            style = MaterialTheme.typography.headlineSmall.copy(
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                textAlign = TextAlign.End
             ),
-            modifier = Modifier.fillMaxWidth()
+            maxLines = 1
         )
-
         Text(
-            text = stringResource(id = R.string.result_label),
-            style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold)
-        )
-        TextField(
-            value = result,
-            onValueChange = {},
-            readOnly = true,
-            singleLine = true,
-            textStyle = MaterialTheme.typography.headlineLarge.copy(
-                textAlign = TextAlign.End,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.SemiBold
+            text = result.ifEmpty { "0" },
+            style = MaterialTheme.typography.displaySmall.copy(
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.End
             ),
-            modifier = Modifier.fillMaxWidth()
+            maxLines = 1
         )
     }
 }
