@@ -9,7 +9,7 @@ import net.objecthunter.exp4j.ExpressionBuilder
 import com.emlicame.calculator_app.utils.toCalculatorString
 
 private const val TAG = "CalculatorViewModel"
-private const val MAX_EXPRESSION_LENGTH = 15
+private const val MAX_EXPRESSION_LENGTH = 20
 
 
 /**
