@@ -66,3 +66,20 @@ fun HomeScreen(
 private fun PreviewHome() {
     HomeScreen()
 }
+
+@Preview(showBackground = true, device = Devices.TABLET )
+@Composable
+private fun PreviewHomeTablet() {
+    HomeScreen()
+}
+
+@Preview(
+    name = "Custom Tablet Portrait",
+    showBackground = true,
+    widthDp = 600,
+    heightDp = 960
+)
+@Composable
+private fun PreviewHomeTabletPortrait() {
+    HomeScreen()
+}
