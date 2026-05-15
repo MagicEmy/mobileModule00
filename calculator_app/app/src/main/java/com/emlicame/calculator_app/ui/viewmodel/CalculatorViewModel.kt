@@ -11,23 +11,9 @@ import com.emlicame.calculator_app.utils.toCalculatorString
 private const val TAG = "CalculatorViewModel"
 private const val MAX_EXPRESSION_LENGTH = 20
 
-
-/**
- * ViewModel for the Calculator screen.
- * Manages the calculator's state and business logic.
- * Survives configuration changes (rotation, language change, etc.)
- * Holds UI state separate from the UI layer
- * Contains business logic that doesn't belong in composable
- * Is lifecycle-aware and gets cleaned up automatically
- */
 class CalculatorViewModel : ViewModel() {
 
-    /**  Encapsulation: UI can't accidentally modify state directly
-    *    Single Source of Truth: Only ViewModel controls state
-    *    Reactive: UI automatically updates when state changes
-    */
-
-    // PRIVATE mutable state = internal state (only ViewModel can modify)
+    // PRIVATE mutable state = internal state (only ViewModel controls state)
     private val _expression = MutableStateFlow("")
     private val _result = MutableStateFlow("")
     private val _justCalculated = MutableStateFlow(false)
@@ -36,14 +22,9 @@ class CalculatorViewModel : ViewModel() {
     val expression: StateFlow<String> = _expression.asStateFlow()
     val result: StateFlow<String> = _result.asStateFlow()
 
-//    val justCalculated: StateFlow<Boolean> = _justCalculated.asStateFlow() // possible future use - exposed for consistency
-
 
     private val operatorRegex = Regex("[+\\-*/]")
 
-    /**
-     * Main entry point for all button clicks
-     */
     fun onButtonClick(label: String) {
         when (label) {
             "AC" -> handleClearAll()
@@ -115,7 +96,6 @@ class CalculatorViewModel : ViewModel() {
                 }
             }
 
-            // Allow minus for negative numbers at start
             currentExpr.isEmpty() -> {
                 if (operator == "-") {
                     _expression.value = operator
@@ -185,17 +165,11 @@ class CalculatorViewModel : ViewModel() {
 
     // HELPER FUNCTIONS
 
-    /**
-     * Check if expression ends with an operator
-     */
     private fun endsWithOperator(text: String): Boolean {
         if (text.isEmpty()) return false
         return text.last() in setOf('+', '-', '*', '/')
     }
 
-    /**
-     * Check if current number already has a decimal point
-     */
     private fun currentNumberHasDecimal(): Boolean {
         return _expression.value
             .split(operatorRegex)
